@@ -104,3 +104,76 @@ fun makeList1(infile,NONE)=nil
 
 fun makeList(infile)=
       makeList1(infile,input1(infile));
+
+(*Chapter 5*)
+
+val rec reverse = fn
+		 nil => nil
+   |x::xs => reverse(xs)@[x];
+
+val addOne = fn
+	    x => x+1;
+
+val double_crazy = fn 0 => 10 | x => 2*x;
+
+fun double_crazy x = case x of
+			 0 => 10 
+		       | x => 2*x;
+
+
+(*Exercise 5.1.2*)
+
+
+
+val rec sumPairs=fn nil => 0 | (x,y)::xs => x+y+sumPairs(xs);
+
+fun sumPairs x = case x of
+		     nil => 0
+		   | (x,y)::xs => x+y+sumPairs(xs);
+
+fun printList(nil)=nil
+  | printList (x::xs) = (
+      print(Int.toString(x));
+      print("\n");
+      printList(xs)
+  );
+
+val rec printList = fn
+		   nil => nil
+  | (x::xs) => (
+      print(Int.toString(x));
+      print("\n");
+      printList(xs)
+  );
+
+fun printlist x = case x of
+		      nil => nil
+		    | x::xs => (
+			print(Int.toString(x));
+			print("\n");
+			printList(xs)
+		    );
+
+val rec mergePartiallySorted = fn
+			      (nil,M) => M
+					     |(L,nil) => L
+   |(L as x::xs, M as y::ys) => if x<y then x::mergePartiallySorted(xs,M) else
+				y::mergePartiallySorted(L,ys);
+
+fun mergePartiallySorted (L,M) = case (L,M) of
+				     (nil,M) => M
+				   | (L,nil) => L
+				   | (L as x::xs, M as y::ys) => if x<y then x::mergePartiallySorted(xs,M) else
+								 y::mergePartiallySorted(ys,L);
+
+val rec comb = fn
+	      (_,0)=>1
+   |(n,m) => if n=m then 1 else
+	     comb(n-1,m) + comb(n-1,m-1);
+
+fun comb (n,m) = case (n,m) of
+		     (_,0) => 1
+		   | (n,m) => if n=m then 1 else
+			      comb(n-1,m)+comb(n-1,m-1);
+
+(*Exercise 5.1.4*)
