@@ -191,3 +191,65 @@ fun trap(a,b,n,F)= if b-a < 0.0 orelse n < 0
 		       in
 			   width*avgheigth+trap(a+width,b,n-1,F)
 		       end;
+
+fun simpleMap(F,nil)=nil
+  | simpleMap (F,x::xs)= F(x)::simpleMap(F,xs); 
+
+fun reduce(F,x::nil)=x
+  | reduce (F,x::xs) = F(x,reduce(F,xs));
+
+fun filter(P,nil)=nil
+  | filter (P,x::xs) = if P(x)
+		       then x::filter(P,xs)
+		       else filter(P,xs);
+
+fun exponent1(x,0)=1.0
+  | exponent1 (x,n) = x*exponent1(x,n-1);
+
+fun exponent2 x 0=1.0
+  | exponent2 x n = x*(exponent2 x (n-1));
+
+(*exercises 5.5.3*)
+
+fun applyList ListOfFunc InVal= case ListOfFunc of
+				    nil => nil
+				  | x::xs => x(InVal)::(applyList xs InVal);
+
+fun makeFnList F =
+  let
+      val rec G = fn
+		 nil => nil
+	 |(d::ds) => F(d)::(G ds)
+  in
+      G
+  end;
+
+fun substring x y=
+  let
+      val xList1=explode(x);
+      val yList1=explode(y);
+      fun ss(xList,yList)=case (xList, yList) of
+		      (nil,_) => true
+		    | (_,nil) => false
+		    | (x::xs,y::ys) => if x=y then
+					   if ss(xs,ys)
+					   then true
+					   else false
+				       else false
+  in
+      ss(xList1, yList1)
+  end;
+
+fun funf Lstr=
+    let
+	val rec C = fn
+	       nil => nil
+	   |x::xs => (substring x)::(C xs)
+    in
+	C Lstr
+    end;
+
+fun comp(G,F,x)=G(F(x));
+
+fun comp2 G F =
+  fn x=> G(F(x));
