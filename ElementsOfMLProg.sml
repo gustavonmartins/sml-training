@@ -177,3 +177,17 @@ fun comb (n,m) = case (n,m) of
 			      comb(n-1,m)+comb(n-1,m-1);
 
 (*Exercise 5.1.4*)
+
+(*Chapter 5.4*)
+
+fun trap(a,b,n,F)= if b-a < 0.0 orelse n < 0
+		   then 0.0
+		   else
+		       if b-a <= 0.0 orelse n=0
+		       then 0.0
+		       else let
+			   val width = (b-a)/real(n);
+			   val avgheigth = (F(a)+F(a+width))/2.0;
+		       in
+			   width*avgheigth+trap(a+width,b,n-1,F)
+		       end;
