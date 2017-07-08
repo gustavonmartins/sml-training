@@ -215,7 +215,8 @@ fun applyList ListOfFunc InVal= case ListOfFunc of
 				    nil => nil
 				  | x::xs => x(InVal)::(applyList xs InVal);
 
-fun makeFnList F =
+fun makeFnList F = (* creates a function that will converts a list into a list of Functions, where each function is F applied to the original list. USAGE:
+makeFnList Function List will return  you a list of functions. Free variables of functions are all except the first, ie, the first is consumed applied to the list*)
   let
       val rec G = fn
 		 nil => nil
@@ -224,7 +225,7 @@ fun makeFnList F =
       G
   end;
 
-fun substring x y=
+fun substring x y= (*checks if x is a substring of y*)
   let
       val xList1=explode(x);
       val yList1=explode(y);
@@ -235,12 +236,12 @@ fun substring x y=
 					   if ss(xs,ys)
 					   then true
 					   else false
-				       else false
+				       else ss(x::xs,ys)
   in
       ss(xList1, yList1)
   end;
 
-fun funf Lstr=
+fun funf Lstr= (*should be updated to use makeFnList*)
     let
 	val rec C = fn
 	       nil => nil
@@ -248,6 +249,10 @@ fun funf Lstr=
     in
 	C Lstr
     end;
+
+fun funf2 Lstr = makeFnList (substring) Lstr;
+
+applyList (funf2 ["he", "she", "her", "his"]) "hershey";
 
 fun comp(G,F,x)=G(F(x));
 
