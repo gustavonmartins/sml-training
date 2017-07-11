@@ -258,3 +258,110 @@ fun comp(G,F,x)=G(F(x));
 
 fun comp2 G F =
   fn x=> G(F(x));
+
+(*Chapter 6.2*)
+
+datatype ('a, 'b) element=
+	 P of 'a * 'b|
+	 S of 'a;
+
+fun sumElList(nil)=0
+  | sumElList (S(x)::ss) = sumElList(ss)
+  | sumElList (P(x,y)::ps) = y+sumElList(ps);
+
+sumElList [P("in",6),S("hey"),P("a",1)];
+
+datatype 'label bintree=
+	 Empty| (*SOME vs EMPTY*)
+	 Node of 'label * 'label bintree * 'label bintree;
+
+val t = Node(
+	"ML",
+	Node("as",
+	     Node("a",Empty,Empty),
+	     Node("in",Empty,Empty)),
+	Node("types",Empty,Empty));
+
+datatype
+'label eventree=
+Empty|
+Enode of 'label * 'label oddtree * 'label oddtree
+and
+'label oddtree=
+Onode of  'label * 'label eventree * 'label eventree;
+
+val t1=Onode(1,Empty,Empty);
+
+val t2=Onode(2,Empty,Empty);
+
+val t3=Enode(3,t1,t2);
+
+(*case study 6.3*)
+
+
+
+fun lower(nil)=nil
+  | lower (c::cs) = (Char.toLower c)::lower(cs);
+
+fun strLT(L,M)=
+  let
+      val Llower=implode(lower(explode L));
+      val Mlower=implode(lower(explode M));
+  in
+      Llower < Mlower
+  end;
+
+fun lookup ltFun Empty x=false
+  | lookup ltFun (Node(y, left, right)) x = if ltFun(x,y)
+					    then (lookup ltFun left x)
+					    else
+						if ltFun(y,x)
+						then (lookup ltFun right x)
+						else true;
+
+val t=Node("ML",
+	   Node("as",
+		Node("a",Empty,Empty),
+	       Node("in",Empty,Empty)),
+	   Node("types",Empty,Empty));
+
+fun insert ltFun Empty x = Node(x,Empty,Empty)
+  | insert ltFun (T as Node(y, left, right)) x = if ltFun(x,y)
+						 then insert ltFun left x
+						 else
+						     if ltFun(y,x)
+						     then insert ltFun right x
+						     else T;
+
+(* section 8.2.1*)
+
+structure Mapping=struct
+
+exception NotFound;
+
+val create=nil;
+
+fun lookup(d,nil)=raise NotFound
+  | lookup (d,(e,r)::es) =
+    if d=e
+    then r
+    else lookup(d,es);
+
+fun insert (d,r,nil)=[(d,r)]
+  | insert (d,r,(e,s)::es) =
+    if d=e
+    then (d,r)::es
+    else (e,s)::insert(d,r,es)
+		      
+
+end;
+
+signature SIMAPPING =
+sig
+    exception NotFound;
+    val create : (string * int) list;
+    val insert : string * int * (string * int) list -> (string * int) list;
+    val lookup : string * (string * int) list -> int
+end;
+
+structure SiMapping: SIMAPPING = Mapping
